@@ -1,394 +1,661 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Крутая страница</title>
-    <style>
-        /* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Конверт с котиком</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            min-height: 100vh;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #0b0d15;
-            padding: 20px;
-            overflow-x: hidden;
-        }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #fce9ed 0%, #f5d5df 100%);
+      padding: 16px;
+      margin: 0;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      overflow-x: hidden;
+    }
 
-        /* ===== ФОН С НЕОНОМ И ЧАСТИЦАМИ ===== */
-        .bg-effects {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
+    .envelope-wrapper {
+      position: relative;
+      max-width: 440px;
+      width: 100%;
+      perspective: 1200px;
+    }
 
-        /* Цветные размытые пятна */
-        .bg-effects .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.3;
-            animation: blobFloat 12s ease-in-out infinite alternate;
-        }
+    .envelope {
+      position: relative;
+      width: 100%;
+      background: #fce8e0;
+      background-image: 
+        linear-gradient(135deg, #fdf3ef 0%, #f7ddd5 100%);
+      border-radius: 16px 16px 12px 12px;
+      padding: 24px 20px 20px;
+      box-shadow: 
+        0 20px 50px rgba(160, 90, 100, 0.25),
+        0 6px 16px rgba(140, 80, 90, 0.12),
+        inset 0 1px 0 rgba(255, 240, 235, 0.7);
+      border: 1px solid rgba(220, 170, 160, 0.3);
+      min-height: 440px;
+      animation: envelopeFloat 5s infinite ease-in-out;
+    }
 
-        .bg-effects .blob:nth-child(1) {
-            width: 500px;
-            height: 500px;
-            background: #6c3ce0;
-            top: -150px;
-            left: -150px;
-            animation-delay: 0s;
-        }
-        .bg-effects .blob:nth-child(2) {
-            width: 400px;
-            height: 400px;
-            background: #e03c8a;
-            bottom: -100px;
-            right: -100px;
-            animation-delay: -4s;
-        }
-        .bg-effects .blob:nth-child(3) {
-            width: 350px;
-            height: 350px;
-            background: #3ca0e0;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: -8s;
-            opacity: 0.15;
-        }
+    @keyframes envelopeFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-5px) rotate(0.6deg); }
+    }
 
-        @keyframes blobFloat {
-            0% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(60px, -40px) scale(1.1); }
-            66% { transform: translate(-30px, 50px) scale(0.9); }
-            100% { transform: translate(20px, -20px) scale(1.05); }
-        }
+    /* ===== КЛАПАН КОНВЕРТА ===== */
+    .flap {
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      transform: translateX(-50%) rotate(0deg);
+      width: 100%;
+      height: 60px;
+      background: #fce8e0;
+      background-image: linear-gradient(180deg, #f7ddd5 0%, #fce8e0 100%);
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      border-radius: 16px 16px 0 0;
+      border: 1px solid rgba(220, 170, 160, 0.25);
+      border-bottom: none;
+      z-index: 3;
+      transform-origin: top center;
+      animation: flapOpen 1.2s 0.6s ease-out forwards;
+      box-shadow: 0 -4px 12px rgba(160, 100, 110, 0.08);
+    }
 
-        /* Частицы (звёздочки) */
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            animation: particleFloat 8s ease-in-out infinite;
-        }
-        .particle:nth-child(4) { top: 10%; left: 15%; animation-delay: 0s; width: 6px; height: 6px; }
-        .particle:nth-child(5) { top: 25%; left: 85%; animation-delay: -2s; width: 3px; height: 3px; }
-        .particle:nth-child(6) { top: 70%; left: 10%; animation-delay: -4s; width: 5px; height: 5px; }
-        .particle:nth-child(7) { top: 85%; left: 75%; animation-delay: -6s; width: 4px; height: 4px; }
-        .particle:nth-child(8) { top: 45%; left: 5%; animation-delay: -1s; width: 3px; height: 3px; }
-        .particle:nth-child(9) { top: 55%; left: 92%; animation-delay: -5s; width: 5px; height: 5px; }
-        .particle:nth-child(10) { top: 15%; left: 50%; animation-delay: -3s; width: 4px; height: 4px; }
+    @keyframes flapOpen {
+      0% { transform: translateX(-50%) rotateX(0deg); }
+      100% { transform: translateX(-50%) rotateX(-180deg); }
+    }
 
-        @keyframes particleFloat {
-            0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
-            25% { opacity: 0.8; transform: translateY(-30px) scale(1); }
-            75% { opacity: 0.6; transform: translateY(20px) scale(0.8); }
-        }
+    /* ===== ЗАПИСКА ===== */
+    .note-paper {
+      position: relative;
+      z-index: 4;
+      background: #fffcf9;
+      background-image: 
+        radial-gradient(circle at 30% 20%, #fff9f5 0%, #fff0ea 100%);
+      border-radius: 20px 8px 20px 8px;
+      padding: 22px 18px 20px;
+      box-shadow: 
+        0 8px 24px rgba(140, 80, 90, 0.15),
+        inset 0 1px 0 rgba(255, 245, 240, 0.9),
+        inset 0 -2px 6px rgba(200, 150, 150, 0.05);
+      border: 1px solid rgba(230, 180, 170, 0.25);
+      transform: translateY(30px) scale(0.92);
+      opacity: 0;
+      animation: paperJump 1s 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      transform-origin: center bottom;
+      min-height: 300px;
+    }
 
-        /* ===== ОСНОВНАЯ КАРТОЧКА ===== */
-        .card {
-            position: relative;
-            z-index: 1;
-            max-width: 720px;
-            width: 100%;
-            padding: 50px 45px 55px;
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-radius: 48px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 
-                0 30px 80px rgba(0, 0, 0, 0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.06);
-            text-align: center;
-            animation: cardAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+    @keyframes paperJump {
+      0% { 
+        transform: translateY(40px) scale(0.85) rotate(-3deg);
+        opacity: 0;
+      }
+      60% { 
+        transform: translateY(-12px) scale(1.02) rotate(1deg);
+        opacity: 1;
+      }
+      80% { 
+        transform: translateY(4px) scale(0.99) rotate(-0.5deg);
+      }
+      100% { 
+        transform: translateY(0px) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
 
-        @keyframes cardAppear {
-            0% { opacity: 0; transform: scale(0.92) translateY(30px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
+    /* ===== СЕРДЕЧКИ ===== */
+    .hearts-side {
+      position: absolute;
+      top: 15%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      font-size: 24px;
+      color: #f0a0b0;
+      text-shadow: 0 0 12px rgba(235, 150, 170, 0.25);
+      pointer-events: none;
+      z-index: 6;
+      animation: heartSway 4s infinite alternate;
+    }
 
-        /* Декоративный глитч-край */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 50px;
-            background: linear-gradient(135deg, rgba(108, 60, 224, 0.3), rgba(224, 60, 138, 0.2), rgba(60, 160, 224, 0.3));
-            z-index: -1;
-            filter: blur(8px);
-            opacity: 0.5;
-            animation: borderGlow 4s ease-in-out infinite alternate;
-        }
+    .hearts-left {
+      left: -8px;
+      transform: translateX(-25%);
+    }
+    .hearts-right {
+      right: -8px;
+      transform: translateX(25%);
+    }
 
-        @keyframes borderGlow {
-            0% { opacity: 0.3; filter: blur(8px); }
-            100% { opacity: 0.7; filter: blur(12px); }
-        }
+    @keyframes heartSway {
+      0% { opacity: 0.5; transform: translateX(-25%) scale(0.85); }
+      100% { opacity: 1; transform: translateX(-18%) scale(1.1); }
+    }
 
-        /* ===== ИКОНКА ===== */
-        .icon-wrapper {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, rgba(108, 60, 224, 0.2), rgba(224, 60, 138, 0.15));
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            margin-bottom: 18px;
-            font-size: 3.2rem;
-            animation: iconPulse 3s ease-in-out infinite;
-            box-shadow: 0 0 60px rgba(108, 60, 224, 0.08);
-        }
+    .hearts-right {
+      animation-name: heartSwayRight;
+    }
+    @keyframes heartSwayRight {
+      0% { opacity: 0.5; transform: translateX(25%) scale(0.85); }
+      100% { opacity: 1; transform: translateX(18%) scale(1.1); }
+    }
 
-        @keyframes iconPulse {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.05) rotate(3deg); }
-        }
+    .hearts-side span {
+      display: inline-block;
+      animation: sparkle 2.8s infinite alternate;
+      filter: drop-shadow(0 2px 6px rgba(210, 130, 150, 0.2));
+    }
 
-        /* ===== ЗАГОЛОВОК (ТЕКСТ, КОТОРЫЙ ВЫ НАПИШЕТЕ) ===== */
-        .main-text {
-            font-size: clamp(2.4rem, 8vw, 4.8rem);
-            font-weight: 800;
-            line-height: 1.15;
-            margin-bottom: 14px;
-            background: linear-gradient(145deg, #ffffff 20%, #c8b8f0 60%, #f0b0d0 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 80px rgba(108, 60, 224, 0.15);
-            letter-spacing: -0.02em;
-            animation: textReveal 1s ease;
-        }
+    .hearts-side span:nth-child(odd) { animation-delay: 0.3s; }
+    .hearts-side span:nth-child(even) { animation-delay: 1.1s; }
 
-        @keyframes textReveal {
-            0% { opacity: 0; transform: translateY(20px) scale(0.98); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
+    @keyframes sparkle {
+      0% { opacity: 0.4; transform: scale(0.7) rotate(-8deg); }
+      100% { opacity: 1; transform: scale(1.2) rotate(8deg); }
+    }
 
-        /* ===== ПОДЗАГОЛОВОК (ДОП. ТЕКСТ) ===== */
-        .sub-text {
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 400;
-            letter-spacing: 0.03em;
-            margin-bottom: 32px;
-            max-width: 480px;
-            margin-left: auto;
-            margin-right: auto;
-            animation: textReveal 1.2s ease;
-        }
+    /* ===== ТЕКСТ ===== */
+    .note-text {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: #4d353a;
+      font-weight: 350;
+      letter-spacing: 0.15px;
+      text-shadow: 0 1px 0 rgba(255, 245, 240, 0.5);
+    }
 
-        /* ===== КНОПКА ===== */
-        .btn {
-            display: inline-block;
-            padding: 14px 42px;
-            border-radius: 60px;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            color: #fff;
-            background: linear-gradient(145deg, #6c3ce0, #9b4dca);
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 30px rgba(108, 60, 224, 0.25);
-            text-decoration: none;
-            animation: textReveal 1.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
+    .note-text p {
+      margin-bottom: 12px;
+      text-indent: 0.3em;
+    }
 
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            transform: scale(0.8);
-        }
+    .note-text p:last-of-type {
+      margin-bottom: 0;
+    }
 
-        .btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 50px rgba(108, 60, 224, 0.4);
-        }
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1.5px dashed #ecc6cb;
+      font-size: 13px;
+      color: #b2898e;
+      letter-spacing: 0.3px;
+    }
+    .note-header .line { font-style: italic; }
+    .note-header .heart-small {
+      color: #f09caa;
+      animation: pulseSmall 2s infinite;
+    }
+    @keyframes pulseSmall {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+    }
 
-        .btn:hover::after {
-            opacity: 1;
-            transform: scale(1);
-        }
+    /* ===== КЛАССНЫЙ КОТИК ===== */
+    .cat-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 18px;
+      padding: 10px 0;
+      opacity: 0;
+      transform: scale(0.3) translateY(30px);
+      animation: catAppear 1.2s 2.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
 
-        .btn:active {
-            transform: translateY(0) scale(0.97);
-        }
+    @keyframes catAppear {
+      0% { 
+        opacity: 0; 
+        transform: scale(0.2) translateY(40px) rotate(-10deg);
+      }
+      60% { 
+        opacity: 1; 
+        transform: scale(1.15) translateY(-5px) rotate(3deg);
+      }
+      80% { 
+        transform: scale(0.95) translateY(3px) rotate(-1deg);
+      }
+      100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0) rotate(0deg);
+      }
+    }
 
-        /* ===== ДЕКОРАТИВНАЯ ЛИНИЯ ===== */
-        .divider {
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-            margin: 18px auto 20px;
-            border-radius: 10px;
-        }
+    .cat {
+      position: relative;
+      width: 140px;
+      height: 150px;
+      animation: catFloat 3s infinite ease-in-out;
+    }
 
-        /* ===== АДАПТИВ ===== */
-        @media (max-width: 480px) {
-            .card {
-                padding: 32px 22px 36px;
-                border-radius: 32px;
-            }
-            .icon-wrapper {
-                width: 70px;
-                height: 70px;
-                font-size: 2.4rem;
-            }
-            .btn {
-                padding: 12px 30px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+    @keyframes catFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1.5deg); }
+    }
+
+    /* === ГОЛОВА === */
+    .cat-head {
+      position: relative;
+      width: 110px;
+      height: 100px;
+      background: radial-gradient(circle at 35% 30%, #ffe0c0, #f5cba0);
+      border-radius: 50%;
+      margin: 0 auto;
+      box-shadow: 
+        0 8px 25px rgba(180, 120, 80, 0.2),
+        inset 0 -6px 15px rgba(180, 110, 70, 0.1),
+        inset 0 6px 20px rgba(255, 230, 200, 0.5);
+    }
+
+    /* === УШИ === */
+    .ear {
+      position: absolute;
+      width: 32px;
+      height: 40px;
+      background: radial-gradient(ellipse at 50% 60%, #f5cba0, #e8b48c);
+      border-radius: 50% 50% 0 0;
+      top: -18px;
+      box-shadow: inset -3px -6px 10px rgba(160, 100, 60, 0.15);
+    }
+    .ear::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 24px;
+      background: radial-gradient(ellipse at 50% 50%, #ffd5b0, #f0be98);
+      border-radius: 50% 50% 0 0;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .ear-left {
+      left: 6px;
+      transform: rotate(-18deg);
+    }
+    .ear-right {
+      right: 6px;
+      transform: rotate(18deg);
+    }
+
+    /* === БОЛЬШИЕ КРАСИВЫЕ ГЛАЗА === */
+    .eyes {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 68px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .eye {
+      width: 26px;
+      height: 30px;
+      background: radial-gradient(circle at 45% 35%, #ffffff, #f5f5f5);
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 
+        inset 0 2px 8px rgba(0,0,0,0.05),
+        0 3px 10px rgba(0,0,0,0.06);
+      animation: eyeBlink 4.5s infinite;
+    }
+    @keyframes eyeBlink {
+      0%, 96%, 100% { transform: scaleY(1); }
+      98% { transform: scaleY(0.1); }
+    }
+    .eye::after {
+      content: '';
+      position: absolute;
+      width: 15px;
+      height: 19px;
+      background: radial-gradient(circle at 40% 35%, #4a2818, #2a1408);
+      border-radius: 50%;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .eye::before {
+      content: '';
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      background: white;
+      border-radius: 50%;
+      top: 5px;
+      left: 10px;
+      z-index: 2;
+      box-shadow: 14px 10px 0 0 white;
+      animation: eyeShine 3s infinite alternate;
+    }
+    @keyframes eyeShine {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0.7; transform: scale(0.8); }
+    }
+
+    /* === НОС === */
+    .nose {
+      position: absolute;
+      top: 52px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 12px;
+      background: radial-gradient(circle at 50% 40%, #f09caa, #d97a8a);
+      border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+      box-shadow: 0 2px 8px rgba(200, 100, 120, 0.2);
+    }
+
+    /* === УЛЫБКА === */
+    .mouth {
+      position: absolute;
+      top: 62px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 28px;
+      height: 16px;
+      border-bottom: 3px solid #6a3a2a;
+      border-radius: 0 0 50% 50%;
+    }
+    .mouth::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-left: 2px solid #6a3a2a;
+      border-bottom: 2px solid #6a3a2a;
+      border-radius: 0 0 0 50%;
+      top: -2px;
+      left: -5px;
+      transform: rotate(5deg);
+    }
+    .mouth::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-right: 2px solid #6a3a2a;
+      border-bottom: 2px solid #6a3a2a;
+      border-radius: 0 0 50% 0;
+      top: -2px;
+      right: -5px;
+      transform: rotate(-5deg);
+    }
+
+    /* === УСЫ === */
+    .whiskers {
+      position: absolute;
+      top: 56px;
+      width: 100%;
+      height: 20px;
+    }
+    .whisker {
+      position: absolute;
+      width: 35px;
+      height: 2px;
+      background: #8a6a5a;
+      border-radius: 2px;
+      opacity: 0.4;
+    }
+    .whisker-l1 { left: -22px; top: 0; transform: rotate(-12deg); }
+    .whisker-l2 { left: -25px; top: 8px; transform: rotate(0deg); }
+    .whisker-l3 { left: -22px; top: 16px; transform: rotate(12deg); }
+    .whisker-r1 { right: -22px; top: 0; transform: rotate(12deg); }
+    .whisker-r2 { right: -25px; top: 8px; transform: rotate(0deg); }
+    .whisker-r3 { right: -22px; top: 16px; transform: rotate(-12deg); }
+
+    /* === РУМЯНЫЕ ЩЁЧКИ === */
+    .cheek {
+      position: absolute;
+      width: 20px;
+      height: 14px;
+      background: radial-gradient(circle, rgba(240, 160, 180, 0.35), transparent);
+      border-radius: 50%;
+      top: 50px;
+    }
+    .cheek-left { left: 4px; }
+    .cheek-right { right: 4px; }
+
+    /* === ТЕЛО === */
+    .body {
+      position: relative;
+      width: 80px;
+      height: 45px;
+      background: radial-gradient(ellipse at 50% 60%, #f5cba0, #e8b48c);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      margin: -15px auto 0;
+      box-shadow: 0 4px 15px rgba(160, 100, 60, 0.1);
+    }
+
+    /* === ЛАПКИ === */
+    .paws {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: -10px;
+      position: relative;
+      z-index: 2;
+    }
+    .paw {
+      width: 32px;
+      height: 22px;
+      background: radial-gradient(ellipse at 50% 40%, #ffe0c0, #f5cba0);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      box-shadow: 0 4px 12px rgba(160, 100, 60, 0.12);
+      animation: pawWave 2.8s infinite alternate;
+    }
+    .paw:first-child { animation-delay: 0.3s; }
+    .paw:last-child { animation-delay: 0.9s; }
+    @keyframes pawWave {
+      0% { transform: translateY(0) scale(1) rotate(0deg); }
+      100% { transform: translateY(-6px) scale(1.06) rotate(3deg); }
+    }
+    .paw::after {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: rgba(200, 150, 130, 0.3);
+      border-radius: 50%;
+      margin: 2px auto 0;
+      box-shadow: 10px 0 0 0 rgba(200, 150, 130, 0.3);
+    }
+
+    /* === ХВОСТ === */
+    .tail {
+      position: absolute;
+      right: -18px;
+      bottom: 15px;
+      width: 45px;
+      height: 45px;
+      border: 5px solid #e8b48c;
+      border-color: #e8b48c transparent transparent transparent;
+      border-radius: 50%;
+      transform: rotate(35deg);
+      animation: tailWag 2.2s infinite alternate;
+      filter: drop-shadow(0 2px 6px rgba(160, 100, 60, 0.1));
+    }
+    @keyframes tailWag {
+      0% { transform: rotate(25deg) scale(1); }
+      100% { transform: rotate(70deg) scale(1.08); }
+    }
+
+    /* === БАНТИК === */
+    .bow {
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 18px;
+      background: transparent;
+    }
+    .bow::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: radial-gradient(circle at 40% 40%, #f09caa, #d97a8a);
+      border-radius: 50% 0 50% 0;
+      transform: rotate(-30deg);
+      left: 0;
+      box-shadow: 0 2px 8px rgba(200, 100, 120, 0.15);
+    }
+    .bow::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: radial-gradient(circle at 40% 40%, #f09caa, #d97a8a);
+      border-radius: 0 50% 0 50%;
+      transform: rotate(30deg);
+      right: 0;
+      box-shadow: 0 2px 8px rgba(200, 100, 120, 0.15);
+    }
+
+    /* подпись */
+    .cat-label {
+      text-align: center;
+      font-size: 13px;
+      color: #b2898e;
+      opacity: 0;
+      margin-top: 6px;
+      font-style: italic;
+      letter-spacing: 0.5px;
+      animation: labelFade 1s 3s forwards;
+    }
+    @keyframes labelFade {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 0.7; transform: translateY(0); }
+    }
+
+    /* ===== АДАПТИВ ===== */
+    @media (max-width: 440px) {
+      .envelope { padding: 18px 12px 16px; min-height: 380px; }
+      .flap { height: 48px; }
+      .note-paper { padding: 16px 12px 16px; }
+      .note-text { font-size: 13.5px; line-height: 1.6; }
+      .hearts-side { font-size: 20px; gap: 14px; }
+      .hearts-left { left: -4px; transform: translateX(-15%); }
+      .hearts-right { right: -4px; transform: translateX(15%); }
+      .cat { transform: scale(0.75); }
+      .cat-container { transform-origin: center; }
+    }
+    @media (max-width: 360px) {
+      .note-text { font-size: 12.5px; }
+      .hearts-side { font-size: 16px; gap: 10px; }
+      .cat { transform: scale(0.6); }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- ===== ФОНОВЫЕ ЭФФЕКТЫ ===== -->
-    <div class="bg-effects">
-        <div class="blob"></div>
-        <div class="blob"></div>
-        <div class="blob"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+<div class="envelope-wrapper">
+  <div class="envelope">
+
+    <!-- Клапан конверта -->
+    <div class="flap"></div>
+
+    <!-- Сердечки -->
+    <div class="hearts-side hearts-left">
+      <span>♥</span><span>♡</span><span>♥</span><span>♡</span><span>♥</span>
+    </div>
+    <div class="hearts-side hearts-right">
+      <span>♡</span><span>♥</span><span>♡</span><span>♥</span><span>♡</span>
     </div>
 
-    <!-- ===== КАРТОЧКА ===== -->
-    <div class="card">
+    <!-- ===== ЗАПИСКА ===== -->
+    <div class="note-paper">
+      <div class="note-header">
+        <span class="line">✧ привет, друг ✧</span>
+        <span class="heart-small">❤︎</span>
+      </div>
 
-        <!-- ИКОНКА -->
-        <div class="icon-wrapper">✨</div>
+      <div class="note-text">
+        <p>Знаешь, иногда кажется, что в 11 классе всё крутится вокруг экзаменов, бесконечных списков тем, баллов — и времени на что-то по-настоящему важное почти не остаётся. А потом вдруг замечаешь, что есть человек, с которым даже про эти самые экзамены можно говорить без напряжения. С тобой как раз так: ты умеешь и поддержать, и шутку вставить, чтобы тревога куда-то улетала.</p>
 
-        <!-- ГЛАВНЫЙ ТЕКСТ (ЗАМЕНИТЕ НА СВОЙ) -->
-        <h1 class="main-text" id="mainText">
-            на самом деле<br>котенок тут ты
-        </h1>
+        <p>Каждая твоя шуточка и улыбочка на всю жизнь останется в моей памяти, я думаю мы можем назваться друзьями, именно друзьями, а не одноклассниками, потому что помимо школьных будней пережили вместе намного больше. Не только личные переживания насчет разъездов и отношений, но и другие более важные вещи :)</p>
 
-        <!-- ПОДЗАГОЛОВОК -->
-        <p class="sub-text" id="subText">
-            просто осознай это
-        </p>
+        <p>Я очень ценю, что мы стали ближе в этом году. Твои слова часто помогают мне собраться, когда кажется, что я всё забыла и ничего не успеваю — а это сейчас дорогого стоит. Спасибо, что ты такой настоящий: не стараешься казаться кем-то другим, не боишься сказать, когда тебе тоже тяжело, и при этом всё равно находишь силы подставить плечо. 🫶🏻</p>
 
-        <div class="divider"></div>
+        <p>Пусть впереди ещё много волнений, но мне спокойнее от мысли, что мы идём по этому пути не поодиночке. Я верю, что ты поступишь, что учеба будет лёгкой, что ты найдешь единомышленников, возможно любовь и тётя Лена продолжит гордиться, что у неё такой прекрасный сын ;)</p>
 
-        <!-- КНОПКА (ДЛЯ ПРИМЕРА) -->
-        <button class="btn" id="actionBtn">✨ осознать</button>
+        <p>Держим связь, Воронеж! Кто знает, какие сны по итогу сбываются 😉</p>
+      </div>
 
-    </div>
+      <!-- ===== КЛАССНЫЙ КОТИК ===== -->
+      <div class="cat-container">
+        <div class="cat">
+          <!-- Голова -->
+          <div class="cat-head">
+            <!-- Уши -->
+            <div class="ear ear-left"></div>
+            <div class="ear ear-right"></div>
+            
+            <!-- Глаза -->
+            <div class="eyes">
+              <div class="eye"></div>
+              <div class="eye"></div>
+            </div>
+            
+            <!-- Нос -->
+            <div class="nose"></div>
+            
+            <!-- Рот -->
+            <div class="mouth"></div>
+            
+            <!-- Усы -->
+            <div class="whiskers">
+              <div class="whisker whisker-l1"></div>
+              <div class="whisker whisker-l2"></div>
+              <div class="whisker whisker-l3"></div>
+              <div class="whisker whisker-r1"></div>
+              <div class="whisker whisker-r2"></div>
+              <div class="whisker whisker-r3"></div>
+            </div>
+            
+            <!-- Щёчки -->
+            <div class="cheek cheek-left"></div>
+            <div class="cheek cheek-right"></div>
+          </div>
+          
+          <!-- Тело -->
+          <div class="body"></div>
+          
+          <!-- Лапки -->
+          <div class="paws">
+            <div class="paw"></div>
+            <div class="paw"></div>
+          </div>
+          
+          <!-- Хвост -->
+          <div class="tail"></div>
+          
+          <!-- Бантик -->
+          <div class="bow"></div>
+        </div>
+      </div>
+      
+      <div class="cat-label">★ самый милый котик ★</div>
 
-    <script>
-        // ===== НЕБОЛЬШАЯ ИНТЕРАКТИВНОСТЬ =====
+    </div> <!-- /.note-paper -->
 
-        const btn = document.getElementById('actionBtn');
-        const mainText = document.getElementById('mainText');
-        const subText = document.getElementById('subText');
-
-        // Массив забавных фраз для кнопки (можно заменить на свои)
-        const phrases = [
-            '😺 мяу?',
-            '🔥 осознать',
-            '✨ погнали',
-            '💫 ещё раз',
-            '🤯 вау',
-            '🌀 принято'
-        ];
-
-        let clickCount = 0;
-
-        btn.addEventListener('click', function() {
-            clickCount++;
-
-            // Меняем текст на кнопке
-            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-            btn.textContent = randomPhrase;
-
-            // Лёгкая анимация нажатия
-            btn.style.transform = 'scale(0.94)';
-            setTimeout(() => {
-                btn.style.transform = '';
-            }, 150);
-
-            // Можно менять текст на странице (как пасхалка)
-            if (clickCount === 3) {
-                mainText.textContent = 'ты — котенок 🐾';
-                subText.textContent = 'и это прекрасно ✨';
-            } else if (clickCount === 6) {
-                mainText.textContent = 'котенок — это ты';
-                subText.textContent = 'всегда им был 🌙';
-            } else if (clickCount > 8) {
-                mainText.textContent = 'ну ты понял 😏';
-                subText.textContent = 'хватит нажимать 😄';
-            }
-
-            // Небольшой эффект на карточке
-            document.querySelector('.card').style.transition = 'box-shadow 0.3s ease';
-            document.querySelector('.card').style.boxShadow = '0 0 80px rgba(108, 60, 224, 0.15)';
-            setTimeout(() => {
-                document.querySelector('.card').style.boxShadow = '';
-            }, 400);
-        });
-
-        // Просто для красоты: если кликнуть на главный текст — он меняется
-        mainText.addEventListener('click', function() {
-            const texts = [
-                'на самом деле котенок тут ты',
-                'ты — котенок 🐾',
-                'котенок внутри тебя',
-                'мяу? мяу! 😺',
-                'осознай себя котом'
-            ];
-            const current = mainText.textContent;
-            let next = texts[Math.floor(Math.random() * texts.length)];
-            while (next === current && texts.length > 1) {
-                next = texts[Math.floor(Math.random() * texts.length)];
-            }
-            mainText.textContent = next;
-            mainText.style.animation = 'none';
-            setTimeout(() => {
-                mainText.style.animation = 'textReveal 0.5s ease';
-            }, 10);
-        });
-
-        console.log('🐱 Ты — котенок. Просто прими это.');
-    </script>
+  </div> <!-- /.envelope -->
+</div> <!-- /.envelope-wrapper -->
 
 </body>
 </html>
